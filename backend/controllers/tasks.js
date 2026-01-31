@@ -1,7 +1,7 @@
 // backend/controllers/tasks.js  
 const pool = require('../config/db');  
 
-// ✅ GET /tasks  
+//  GET /tasks  
 exports.getTasks = async (req, res) => {  
   try {  
     const { rows } = await pool.query('SELECT * FROM tasks');  
@@ -12,7 +12,7 @@ exports.getTasks = async (req, res) => {
   }  
 };  
 
-// ✅ POST /tasks  
+//  POST /tasks  
 exports.createTask = async (req, res) => {  
   const { title, status = 'pending' } = req.body;  
 
@@ -32,12 +32,12 @@ exports.createTask = async (req, res) => {
   }  
 };  
 
-// ✅ PUT /tasks/:id (à compléter plus tard)  
+//  PUT /tasks/:id (à compléter plus tard)  
 exports.updateTask = async (req, res) => {  
   // TODO: Implémenter ici  
 };  
 
-// ✅ DELETE /tasks/:id (à compléter plus tard)  
+//  DELETE /tasks/:id (à compléter plus tard)  
 exports.deleteTask = async (req, res) => {  
   // TODO: Implémenter ici  
 };  
