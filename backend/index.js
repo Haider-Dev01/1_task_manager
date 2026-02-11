@@ -2,7 +2,7 @@ const express = require ("express")
 const app = express()
 // const { Pool } = require('pg');
 require('dotenv').config()
-
+const errorHandler = require('./middleware/error'); // Importez le middleware d'erreur global
 app.use(express.json());
 
 const pool = require('./config/db'); // Importez le pool depuis config/db.js
@@ -26,10 +26,14 @@ const pool = require('./config/db'); // Importez le pool depuis config/db.js
 // 🔗 Connexion aux routes  
 app.use(tasksRouter = require('./routes/tasks'));  
 
-// ❌ Gestion des erreurs 404  
-app.use((req, res) => {  
-  res.status(404).json({ error: `Endpoint ${req.method} ${req.url} not found` });  
-});  
+// Middleware d'erreur (DOIT être le DERNIER)
+app.use(errorHandler);
+
+
+// //  Gestion des erreurs 404  
+// app.use((req, res) => {  
+//   res.status(404).json({ error: `Endpoint ${req.method} ${req.url} not found` });  
+// });  
 
 
 // app.use("/",(req,res) =>{ 

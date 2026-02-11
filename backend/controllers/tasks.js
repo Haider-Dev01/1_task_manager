@@ -6,10 +6,10 @@ exports.getTasks = async (req, res) => {
   try {  
     const { rows } = await pool.query('SELECT * FROM tasks');  
     res.json(rows);  
-  } catch (err) {  
-    console.error('[GET /tasks] DB Error:', err);  
-    res.status(500).json({ error: 'Failed to fetch tasks' });  
-  }  
+    } catch (err) {  
+      console.error('[GET /tasks] DB Error:', err);  
+      res.status(500).json({ error: 'Failed to fetch tasks' });  
+    }  
 };  
 // Get /tasks/:id
 // 1) exports
@@ -37,7 +37,7 @@ exports.getTasksById = async (req,res) => {
 }
 //  POST /tasks  
 exports.createTask = async (req, res) => {  
-  const { title, status = 'pending' } = req.body;  
+  const { title, status  } = req.body;  
 
   if (!title?.trim()) {  
     return res.status(400).json({ error: 'Title is required' });  
@@ -89,10 +89,10 @@ exports.deleteTask = async (req, res) => {
     // 4) supprimer la ligne dans la BDD
 
     try {
-      const {rowcount} = await pool.query('DELETE FROM TASKS WHERE ID = $1', [id])
+      const {rowCount} = await pool.query('DELETE FROM TASKS WHERE ID = $1', [id])
     
-    // 5) si rowcount  =0  => 404 not found
-      if (rowcount ===0 ) {
+    // 5) si rowCount  =0  => 404 not found
+      if (rowCount ===0 ) {
         return res.status(404).json({error : 'ligne non trouvée '})
       }
     // 6) si rowcoount =1 ; 204 succes de delete 
@@ -105,3 +105,5 @@ exports.deleteTask = async (req, res) => {
   }
 
 }; 
+
+// apres implemntation de middleware de erreur global , on peut supprimer tous les TRY CATCH 
