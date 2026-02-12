@@ -25,6 +25,7 @@ const pool = require('./config/db'); // Importez le pool depuis config/db.js
 
 // 🔗 Connexion aux routes  
 app.use(tasksRouter = require('./routes/tasks'));  
+app.use(authRouter = require('./routes/auth'));
 
 // Middleware d'erreur (DOIT être le DERNIER)
 app.use(errorHandler);
