@@ -24,7 +24,7 @@ exports.getTasksById = async (req,res) => {
   }
   // 4) recuperer la tache dans la BDD
   try {
-    const {rows} = await pool.query('SELECT * FROM TASKS WHERE user_id = $1 AND user_id = $2 ,[id,req.user.id]')
+    const {rows} = await pool.query('SELECT * FROM TASKS WHERE user_id = $1 AND user_id = $2 ',[id,req.user.id])
     // 5) si rows.length ===0  => 404 not found
     if (rows.length === 0) {
       return res.status(404).json({error : 'Tâche non trouvée'})

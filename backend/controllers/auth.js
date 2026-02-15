@@ -60,7 +60,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign(  
       { userId: rows[0].id },  
       process.env.JWT_SECRET || 'default_secret',  
-      { expiresIn: '1h' }  
+      { expiresIn: '24h' }  
     );  
     
 
@@ -72,7 +72,7 @@ exports.login = async (req, res) => {
 const token = jwt.sign(
   { userId: rows[0].id, email: rows[0].email }, // ← Ajoutez email
   process.env.JWT_SECRET || 'default_secret',
-  { expiresIn: '1h' }
+  { expiresIn: '24h' }
 );
 
    
