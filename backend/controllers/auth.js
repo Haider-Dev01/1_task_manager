@@ -62,9 +62,18 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET || 'default_secret',  
       { expiresIn: '1h' }  
     );  
+    
 
     res.json({ token });  
   } catch (err) {  
     throw err;  
-  }  
+  } 
+  // Dans exports.login (fichier controllers/auth.js)
+const token = jwt.sign(
+  { userId: rows[0].id, email: rows[0].email }, // ← Ajoutez email
+  process.env.JWT_SECRET || 'default_secret',
+  { expiresIn: '1h' }
+);
+
+   
 };  

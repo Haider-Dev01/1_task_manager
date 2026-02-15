@@ -45,7 +45,7 @@ exports.createTask = async (req, res) => {
 
   try {  
     const { rows } = await pool.query(  
-      'INSERT INTO tasks (title, status) VALUES ($1, $2) RETURNING *',  
+      'INSERT INTO tasks (title, status,) VALUES ($1, $2) RETURNING *',  
       [title.trim(), status]  
     );  
     res.status(201).json(rows[0]);  
