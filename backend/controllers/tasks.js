@@ -45,8 +45,8 @@ exports.createTask = async (req, res) => {
 
   try {  
     const { rows } = await pool.query(  
-      'INSERT INTO tasks (title, status,) VALUES ($1, $2) RETURNING *',  
-      [title.trim(), status]  
+      'INSERT INTO tasks (title, status,) VALUES ($1, $2, $3) RETURNING *',  
+      [title.trim(), status, req.user.id]  
     );  
     res.status(201).json(rows[0]);  
   } catch (err) {  
@@ -107,3 +107,4 @@ exports.deleteTask = async (req, res) => {
 }; 
 
 // apres implemntation de middleware de erreur global , on peut supprimer tous les TRY CATCH 
+
