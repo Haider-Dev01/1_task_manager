@@ -4,7 +4,9 @@ const pool = require('../config/db');
 //  GET /tasks  
 exports.getTasks = async (req, res) => {  
   try {  
-    const { rows } = await pool.query('SELECT * FROM tasks');  
+    const { rows } = await pool.query('SELECT * FROM tasks WHERE user_id = $1,[req.user.id]') ; // ← Seulement les tâches de l'utilisateur 
+    // Filtrer par user_id
+  
     res.json(rows);  
     } catch (err) {  
       console.error('[GET /tasks] DB Error:', err);  
@@ -22,7 +24,7 @@ exports.getTasksById = async (req,res) => {
   }
   // 4) recuperer la tache dans la BDD
   try {
-    const {rows} = await pool.query('SELECT * FROM TASKS WHERE ID = $1' ,[id])
+    const {rows} = await pool.query('SELECT * FROM TASKS WHERE user_id = $1 AND user_id = $2 ,[id,req.user.id]')
     // 5) si rows.length ===0  => 404 not found
     if (rows.length === 0) {
       return res.status(404).json({error : 'Tâche non trouvée'})
@@ -45,7 +47,7 @@ exports.createTask = async (req, res) => {
 
   try {  
     const { rows } = await pool.query(  
-      'INSERT INTO tasks (title, status,) VALUES ($1, $2, $3) RETURNING *',  
+      'INSERT INTO tasks (title, status,user_id) VALUES ($1, $2, $3) RETURNING *',  
       [title.trim(), status, req.user.id]  
     );  
     res.status(201).json(rows[0]);  
@@ -64,8 +66,8 @@ exports.updateTask = async (req, res) => {
 
   try {
     const { rows } = await pool.query(
-      'UPDATE tasks SET title = $1, status = $2 WHERE id = $3 RETURNING *',
-      [title, status, id]
+      'UPDATE tasks SET title = $1, status = $2 WHERE user_id = $3 RETURNING *',
+      [title, status, req.user.id]
     );
     if (rows.length === 0) return res.status(404).json({ error: 'Task not found' });
     res.json(rows[0]);
