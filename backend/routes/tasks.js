@@ -5,19 +5,14 @@ const tasksController = require('../controllers/tasks');
 const authMiddleware = require('../middleware/auth');  
 const authController = require('../controllers/auth');
 
-// ✅ Routes CRUD  
-router.get('/tasks', tasksController.getTasks);  
-router.get('/tasks/:id', tasksController.getTasksById);
-router.post('/tasks', tasksController.createTask);  
-router.put('/tasks/:id', tasksController.updateTask);  
-router.delete('/tasks/:id', tasksController.deleteTask);  
-
+// Routes publiques (inscription/login)
 router.post('/register', authController.register);  
 router.post('/login', authController.login);
 
-// Appliquer le middleware à TOUTES les routes tasks  
+// Appliquer le middleware d'auth AVANT les routes protégées
 router.use(authMiddleware.protect);  
 
+// ✅ Routes CRUD protégées
 router.get('/tasks', tasksController.getTasks);  
 router.get('/tasks/:id', tasksController.getTasksById);
 router.post('/tasks', tasksController.createTask);
