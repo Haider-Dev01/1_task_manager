@@ -4,7 +4,7 @@ const pool = require('../config/db');
 //  GET /tasks  
 exports.getTasks = async (req, res) => {  
   try {  
-    const { rows } = await pool.query('SELECT * FROM tasks WHERE user_id = $1,[req.user.id]') ; // ← Seulement les tâches de l'utilisateur 
+    const { rows } = await pool.query('SELECT * FROM tasks WHERE user_id = $1',[req.user.id]) ; // ← Seulement les tâches de l'utilisateur 
     // Filtrer par user_id
   
     res.json(rows);  

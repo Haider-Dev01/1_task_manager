@@ -5,3 +5,49 @@
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsImlhdCI6MTc3MTE1OTAxNywiZXhwIjoxNzcxMTYyNjE3fQ.9fi6zOdQKGujENk3lO-qCGGoR2hb-QD3OHnaXr7Jf08"
 }
+
+Id : 7
+{
+"email": "userA@gmail.com",
+"password": "123456"
+}
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjcsImlhdCI6MTc3MTE2NjEwOSwiZXhwIjoxNzcxMTY5NzA5fQ.ypuJdw6kOcFjlqg8dPBSgDImuTQsspIhqYWN5vOL7vM"
+}
+{
+  "id": 5,
+  "title": "Tâche de User A : manger soufflé",
+  "status": "pending",
+  "user_id": 7
+}
+user_id doit = Id 
+
+
+
+id=8
+{
+  "id": 8,
+  "email": "userB@test.com"
+}
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImlhdCI6MTc3MTE2NjQ2NywiZXhwIjoxNzcxMTcwMDY3fQ.3Q0AGBUN_mv7YtoQL4mHrOWXONYHatknoCzaiefmJ6I"
+
+}
+
+{
+  "id": 6,
+  "title": "Tâche de User B coder task-manager",
+  "status": "done",
+  "user_id": 8
+}
+
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjksImlhdCI6MTc3MTE2OTMyNiwiZXhwIjoxNzcxMTcyOTI2fQ.i6C6VDSk5sW75PrgcbvzNFesVmRTWuyqJUIMkTwn8Hw"
+}
+{
+  "id": 7,
+  "title": "Tâche de User C joue avec le play",
+  "status": "pending",
+  "user_id": 9
+}
