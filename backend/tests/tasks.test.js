@@ -8,10 +8,10 @@ beforeEach(async () => {
   await pool.query('DELETE FROM users');
 });
 
-// Fermer la connexion après tous les tests
-afterAll(async () => {
-  await pool.end();
-}, 10000);
+afterEach(async () => {
+  await pool.query('DELETE FROM tasks');
+  await pool.query('DELETE FROM users');
+});
 
 // Fonction utilitaire pour obtenir un token
 async function getToken() {
