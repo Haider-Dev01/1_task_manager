@@ -52,6 +52,7 @@ async function setupTestDB() {
   `);
 
   console.log('✅ Test tables created');
+  await testPool.end();
 }
 
 module.exports = { testPool, setupTestDB };

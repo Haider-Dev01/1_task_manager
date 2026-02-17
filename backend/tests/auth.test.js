@@ -1,38 +1,44 @@
+// En haut du fichier, AVANT tout import de app
+require('dotenv').config({ path: '.env.test' }); // ← Charge .env.test
+
 const request = require('supertest');
-const app = require('../index'); // ← Importez index.js (qui exporte app)
+const app = require('../index');
 const pool = require('../config/db');
 
-// Vider la DB avant chaque test
+// ✅ VIDE les tables AVANT chaque test
 beforeEach(async () => {
-  await pool.query('DELETE FROM tasks');
-  await pool.query('DELETE FROM users');
+  await pool.query('DELETE FROM tasks_test');
+  await pool.query('DELETE FROM users_test CASCADE');
 });
 
-afterEach(async () => {
-  await pool.query('DELETE FROM tasks');
-  await pool.query('DELETE FROM users');
+// ✅ Ferme la connexion APRÈS tous les tests
+afterAll(async () => {
+  await pool.end();
 });
+
 
 describe('POST /register', () => {
   it('should create a new user', async () => {
+    const email = `test_${Date.now()}@test.com`;
     const res = await request(app)
       .post('/register')
       .send({
-        email: 'test@test.com',
+        email,
         password: '123456'
       })
       .expect(201);
 
     expect(res.body).toHaveProperty('id');
-    expect(res.body.email).toBe('test@test.com');
+    expect(res.body.email).toBe(email);
   });
 
   it('should return 409 if email already exists', async () => {
+    const email = `dup_${Date.now()}@test.com`;
     // Créer un utilisateur
     await request(app)
       .post('/register')
       .send({
-        email: 'duplicate@test.com',
+        email,
         password: '123456'
       });
 
@@ -40,7 +46,7 @@ describe('POST /register', () => {
     const res = await request(app)
       .post('/register')
       .send({
-        email: 'duplicate@test.com',
+        email,
         password: '123456'
       })
       .expect(409);
@@ -51,11 +57,12 @@ describe('POST /register', () => {
 
 describe('POST /login', () => {
   it('should return a token for valid credentials', async () => {
+    const email = `login_${Date.now()}@test.com`;
     // Créer un utilisateur
     await request(app)
       .post('/register')
       .send({
-        email: 'login@test.com',
+        email,
         password: '123456'
       });
 
@@ -63,7 +70,7 @@ describe('POST /login', () => {
     const res = await request(app)
       .post('/login')
       .send({
-        email: 'login@test.com',
+        email,
         password: '123456'
       })
       .expect(200);
@@ -75,7 +82,7 @@ describe('POST /login', () => {
     const res = await request(app)
       .post('/login')
       .send({
-        email: 'wrong@test.com',
+        email: `wrong_${Date.now()}@test.com`,
         password: 'wrong'
       })
       .expect(401);

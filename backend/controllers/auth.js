@@ -1,6 +1,9 @@
 // register controller 
 const bcrypt = require('bcrypt');  
-const pool = require('../config/db');  
+const pool = require('../config/db');
+
+// ✅ Sélectionner la bonne table selon l'environnement
+const USERS_TABLE = process.env.NODE_ENV === 'test' ? 'users_test' : 'users';
 
 exports.register = async (req, res) => {  
   const { email, password } = req.body;  
@@ -16,7 +19,7 @@ exports.register = async (req, res) => {
 
     // Insérer dans la DB  
     const { rows } = await pool.query(  
-      'INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id, email',  
+      `INSERT INTO ${USERS_TABLE} (email, password_hash) VALUES ($1, $2) RETURNING id, email`,  
       [email, hashedPassword]  
     );  
 
@@ -42,7 +45,7 @@ exports.login = async (req, res) => {
   try {  
     // Récupérer l'utilisateur  
     const { rows } = await pool.query(  
-      'SELECT id, email, password_hash FROM users WHERE email = $1',  
+      `SELECT id, email, password_hash FROM ${USERS_TABLE} WHERE email = $1`,  
       [email]  
     );  
 
@@ -60,20 +63,21 @@ exports.login = async (req, res) => {
     const token = jwt.sign(  
       { userId: rows[0].id },  
       process.env.JWT_SECRET || 'default_secret',  
-      { expiresIn: '24h' }  
+      { expiresIn: '72h' }  
     );  
     
 
     res.json({ token });  
   } catch (err) {  
+
     throw err;  
   } 
   // Dans exports.login (fichier controllers/auth.js)
-const token = jwt.sign(
-  { userId: rows[0].id, email: rows[0].email }, // ← Ajoutez email
-  process.env.JWT_SECRET || 'default_secret',
-  { expiresIn: '24h' }
-);
+// const token = jwt.sign(
+//   { userId: rows[0].id, email: rows[0].email }, // ← Ajoutez email
+//   process.env.JWT_SECRET || 'default_secret',
+//   { expiresIn: '24h' }
+// );
 
    
 };  

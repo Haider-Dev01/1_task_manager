@@ -1,12 +1,14 @@
 // backend/controllers/tasks.js  
-const pool = require('../config/db');  
+const pool = require('../config/db');
+
+// ✅ Sélectionner les bonnes tables selon l'environnement
+const TASKS_TABLE = process.env.NODE_ENV === 'test' ? 'tasks_test' : 'tasks';
+const USERS_TABLE = process.env.NODE_ENV === 'test' ? 'users_test' : 'users';  
 
 //  GET /tasks  
 exports.getTasks = async (req, res) => {  
   try {  
-    const { rows } = await pool.query('SELECT * FROM tasks WHERE user_id = $1',[req.user.id]) ; // ← Seulement les tâches de l'utilisateur 
-    // Filtrer par user_id
-  
+    const { rows } = await pool.query(`SELECT * FROM ${TASKS_TABLE} WHERE user_id = $1`,[req.user.id]) ;
     res.json(rows);  
     } catch (err) {  
       console.error('[GET /tasks] DB Error:', err);  
@@ -24,7 +26,7 @@ exports.getTasksById = async (req,res) => {
   }
   // 4) recuperer la tache dans la BDD
   try {
-    const {rows} = await pool.query('SELECT * FROM TASKS WHERE user_id = $1 AND user_id = $2 ',[id,req.user.id])
+    const {rows} = await pool.query(`SELECT * FROM ${TASKS_TABLE} WHERE id = $1 AND user_id = $2 `,[id,req.user.id])
     // 5) si rows.length ===0  => 404 not found
     if (rows.length === 0) {
       return res.status(404).json({error : 'Tâche non trouvée'})
@@ -47,7 +49,7 @@ exports.createTask = async (req, res) => {
 
   try {  
     const { rows } = await pool.query(  
-      'INSERT INTO tasks (title, status,user_id) VALUES ($1, $2, $3) RETURNING *',  
+      `INSERT INTO ${TASKS_TABLE} (title, status,user_id) VALUES ($1, $2, $3) RETURNING *`,  
       [title.trim(), status, req.user.id]  
     );  
     res.status(201).json(rows[0]);  
@@ -111,7 +113,7 @@ exports.updateTask = async (req, res) => {
 
   try {
     const { rows } = await pool.query(
-      `UPDATE tasks SET ${updates.join(', ')} WHERE user_id = $${index} AND id = $${index + 1} RETURNING *`,
+      `UPDATE ${TASKS_TABLE} SET ${updates.join(', ')} WHERE user_id = $${index} AND id = $${index + 1} RETURNING *`,
       values
     );
 
@@ -165,7 +167,7 @@ exports.deleteTask = async (req, res) => {
 
   try {
     const { rowCount } = await pool.query(
-      'DELETE FROM tasks WHERE id = $1 AND user_id = $2',
+      `DELETE FROM ${TASKS_TABLE} WHERE id = $1 AND user_id = $2`,
       [parseInt(id), req.user.id]
     );
 
