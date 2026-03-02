@@ -1,6 +1,12 @@
 // register controller 
 const bcrypt = require('bcrypt');  
-const pool = require('../config/db');
+const pool  = require('../config/db');
+
+const { STATUS_PENDING } = require('../utils/constants');
+const { isValidId } = require('../utils/helpers');
+const { signToken } = require('../utils/jwt');
+
+
 
 // ✅ Sélectionner la bonne table selon l'environnement
 const USERS_TABLE = process.env.NODE_ENV === 'test' ? 'users_test' : 'users';
