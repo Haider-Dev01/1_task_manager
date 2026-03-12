@@ -1,7 +1,7 @@
 // backend/controllers/tasks.js  
 const pool = require('../config/db');
 
-// ✅ Sélectionner les bonnes tables selon l'environnement
+//  Sélectionner les bonnes tables selon l'environnement
 const TASKS_TABLE = process.env.NODE_ENV === 'test' ? 'tasks_test' : 'tasks';
 const USERS_TABLE = process.env.NODE_ENV === 'test' ? 'users_test' : 'users';  
 
@@ -48,10 +48,11 @@ exports.createTask = async (req, res) => {
   }  
 
   try {  
-    const { rows } = await pool.query(  
-      `INSERT INTO ${TASKS_TABLE} (title, status,user_id) VALUES ($1, $2, $3) RETURNING *`,  
-      [title.trim(), status, req.user.id]  
-    );  
+    const { rows } = await pool.query(
+  `INSERT INTO ${TASKS_TABLE} (title, status, user_id, created_at, updated_at) 
+   VALUES ($1, $2, $3, NOW(), NOW()) RETURNING *`,
+  [title.trim(), status, req.user.id]
+);
     res.status(201).json(rows[0]);  
   } catch (err) {  
     console.error('[POST /tasks] DB Error:', err);  
@@ -113,8 +114,8 @@ exports.updateTask = async (req, res) => {
 
   try {
     const { rows } = await pool.query(
-      `UPDATE ${TASKS_TABLE} SET ${updates.join(', ')} WHERE user_id = $${index} AND id = $${index + 1} RETURNING *`,
-      values
+      `UPDATE ${TASKS_TABLE} SET ${updates.join(', ')}, updated_at = NOW() 
+ WHERE user_id = $${index} AND id = $${index + 1} RETURNING *`
     );
 
     // Si aucune tâche mise à jour → soit ID invalide, soit pas la propriété de l'utilisateur
