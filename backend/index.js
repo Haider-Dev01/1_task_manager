@@ -1,51 +1,26 @@
-const express = require ("express")
-const app = express()
-// const { Pool } = require('pg');
-require('dotenv').config()
-const fs = require('fs');
-const errorHandler = require('./middleware/error'); // Importez le middleware d'erreur global
-const { swaggerUi, swaggerSpec } = require('./docs/swagger');
+const express = require('express');
+const app = express();
+require('dotenv').config();
+const morgan = require('morgan');
+const logger = require('./utils/logger');
+
+// ✅ 1. Parsing JSON
 app.use(express.json());
 
-const pool = require('./config/db'); // Importez le pool depuis config/db.js
+// ✅ 2. Logging (DOIT être avant les routes)
+app.use(morgan('combined', { 
+  stream: { write: message => logger.info(message.trim()) } 
+}));
 
+// ✅ 3. Routes
+app.use(require('./routes/auth'));
+app.use(require('./routes/tasks'));
+app.use('/api-docs', require('./docs/swagger').swaggerUi.serve, require('./docs/swagger').swaggerUi.setup(require('./docs/swagger').swaggerSpec));
 
-// // 🔑 Connexion sécurisée à PostgreSQL  
-// const pool = new Pool({  
-//   host: process.env.DB_HOST,  
-//   port: process.env.DB_PORT,  
-//   user: process.env.DB_USER,  
-//   password: process.env.DB_PASSWORD,  
-//   database: process.env.DB_NAME,  
-// }); 
+// ✅ 4. Middleware d'erreur (dernier)
+app.use(require('./middleware/error'));
 
-// Test de connexion  
-// pool.connect((err) => {  
-//   if (err) throw new Error(`DB connection failed: ${err.message}`);  
-//   console.log('✅ Connected to PostgreSQL');  
-// });
-
-// 🔗 Connexion aux routes  
-app.use(tasksRouter = require('./routes/tasks'));  
-app.use(authRouter = require('./routes/auth'));
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// Middleware d'erreur (DOIT être le DERNIER)
-app.use(errorHandler);
-
-
-// //  Gestion des erreurs 404  
-// app.use((req, res) => {  
-//   res.status(404).json({ error: `Endpoint ${req.method} ${req.url} not found` });  
-// });  
-
-// app.use("/",(req,res) =>{ 
-//     res.json({message:"salut"})
-// } )
-
-//const port = process.env.PORT || 3000
-//app.listen(port , () => {console.log(`server is running in port : ${port}`)})   
-
+// ✅ 5. Démarrage
 if (require.main === module) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
